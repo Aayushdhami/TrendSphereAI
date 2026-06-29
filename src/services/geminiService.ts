@@ -3,6 +3,7 @@
  * FIXED: Verified free model names + reduced retry storm
  */
 
+import { Key } from "~node_modules/lucide-react/dist/lucide-react";
 import type {
   AIChatMessage,
   Stock,
@@ -11,26 +12,17 @@ import type {
   HistoricalDataPoint,
 } from "~src/types";
 
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 // ==================== CONFIGURATION ====================
-// All models below are verified working on OpenRouter free tier (May 2025)
-
 const MODEL_CONFIG = {
-  // Primary: Gemini 2.0 Flash — fast, free, great for finance & JSON
-  PRIMARY: "google/gemini-2.0-flash-exp:free",
-  FALLBACKS: [
-    "deepseek/deepseek-r1:free",                // DeepSeek R1 — strong reasoning
-    "meta-llama/llama-3.3-70b-instruct:free",   // Llama 3.3 70B — reliable fallback
-    "mistralai/mistral-7b-instruct:free",        // Mistral 7B — lightweight fallback
-  ],
+  PRIMARY: "llama-3.3-70b-versatile", // Specific Groq model as requested
 } as const;
 
 const DEFAULT_TEMPERATURE = 0.35;
 const DEFAULT_MAX_TOKENS = 2048;
 
 // ==================== CACHE TTL ====================
-
 const CACHE_TTL = {
   STOCK_ANALYSIS: 300000,   // 5 min
   MARKET_SUMMARY: 120000,   // 2 min
@@ -141,21 +133,12 @@ class AIService {
         const raw = localStorage.getItem("stockai_settings");
         settings = raw ? JSON.parse(raw) : {};
       }
-      return settings.openRouterApiKey || "";
+      return settings.groqApiKey || "";
     } catch {
       return "";
     }
   }
 
-  /**
-   * Core AI Call with Multi-Model Fallback + Smart Retry
-   *
-   * FIXED vs original:
-   *  - Max 2 retries per model (was 6) → prevents the request flood shown in DevTools
-   *  - Shorter initial delay, still exponential backoff
-   *  - 429 (rate-limit) retries the SAME model; other errors fall through to next model
-   *  - Clear error thrown when API key is missing
-   */
   private async callAI(
     prompt: string,
     options: {
@@ -166,14 +149,12 @@ class AIService {
     } = {}
   ): Promise<string> {
     const apiKey = await this.getApiKey();
+    const msg = await this.getCacheKey("StockAI-Key");
 
     if (!apiKey || apiKey.length < 10) {
-      throw new Error(
-        "OpenRouter API key not configured. Go to Settings and add your API key from openrouter.ai."
-      );
+      throw new Error("Groq API key not configured. Go to Settings and add your API key.");
     }
 
-    const models = [MODEL_CONFIG.PRIMARY, ...MODEL_CONFIG.FALLBACKS];
     const {
       temperature = DEFAULT_TEMPERATURE,
       maxTokens = DEFAULT_MAX_TOKENS,
@@ -181,82 +162,44 @@ class AIService {
       systemPrompt,
     } = options;
 
-    let lastError: Error | null = null;
+    try {
+      const body: any = {
+        model: MODEL_CONFIG.PRIMARY,
+        messages: [
+          ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+          { role: "user", content: prompt },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+      };
 
-    for (const model of models) {
-      // Max 2 retries per model (only for 429 rate-limit, not for 4xx errors)
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try {
-          const body: any = {
-            model,
-            messages: [
-              ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
-              { role: "user", content: prompt },
-            ],
-            temperature,
-            max_tokens: maxTokens,
-          };
+      if (responseFormat) body.response_format = { type: responseFormat };
 
-          if (responseFormat) body.response_format = { type: responseFormat };
+      const res = await fetch(GROQ_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(body),
+      });
 
-          const res = await fetch(OPENROUTER_API_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`,
-              "HTTP-Referer": "https://tradexai.pro",
-              "X-Title": "TradexAI Pro",
-            },
-            body: JSON.stringify(body),
-          });
-
-          // Rate limited — wait and retry same model
-          if (res.status === 429) {
-            if (attempt < 1) {
-              const delay = 2000 + Math.random() * 1000;
-              console.warn(`[AIService] ${model} rate-limited, retrying in ${Math.round(delay)}ms`);
-              await new Promise(r => setTimeout(r, delay));
-              continue;
-            }
-            // Exhausted retries for this model, try next
-            lastError = new Error(`${model} rate-limited`);
-            break;
-          }
-
-          // Non-retriable 4xx (bad model name, auth error, etc.) — skip to next model immediately
-          if (res.status === 400 || res.status === 404) {
-            const errData = await res.json().catch(() => ({}));
-            const msg = errData?.error?.message || `HTTP ${res.status}`;
-            console.warn(`[AIService] ${model} rejected (${res.status}): ${msg} — trying next model`);
-            lastError = new Error(msg);
-            break; // Don't retry 400/404, go to next model
-          }
-
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            throw new Error(errData?.error?.message || `HTTP ${res.status}`);
-          }
-
-          const data = await res.json();
-          const content = data?.choices?.[0]?.message?.content?.trim();
-
-          if (!content) throw new Error("Empty AI response");
-
-          console.info(`[AIService] Success with model: ${model}`);
-          return content;
-
-        } catch (err: any) {
-          lastError = err;
-          console.warn(`[AIService] ${model} attempt ${attempt + 1} failed:`, err.message);
-
-          if (attempt < 1) {
-            await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
-          }
-        }
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || `Groq API Error: ${res.status}`);
       }
-    }
 
-    throw lastError || new Error("All AI models failed");
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content?.trim();
+
+      if (!content) throw new Error("Empty response from Groq");
+
+      return content;
+
+    } catch (err: any) {
+      console.error("[AIService] Groq call failed:", err.message);
+      throw err;
+    }
   }
 
   private parseJsonSafe(raw: string): any {
@@ -421,7 +364,8 @@ Provide:
 
   async chatWithAI(
     messages: AIChatMessage[],
-    stockContext?: { stocks: Stock[]; predictions: Map<string, Prediction> }
+    stockContext?: { stocks: Stock[]; predictions: Map<string, Prediction> },
+    persona: "core" | "trader" | "risk" | "quant" = "core"
   ): Promise<string> {
     const lastMessage = messages[messages.length - 1];
     if (!lastMessage || lastMessage.role !== "user") {
@@ -444,12 +388,29 @@ Provide:
 
     const prompt = `${conversationHistory}${contextBlock}
 
-Respond to the user's latest message. If they ask about a specific stock, provide analysis using the market context available.`;
+Respond to the user's latest message. You are a highly advanced enterprise trading AI. You have access to deep UI integrations to make your analysis visual and actionable. Use these exactly where appropriate:
+- Dynamic Price Area Chart: [CHART: SYMBOL]
+- 5-Point Intelligence Radar Diagram: [RADAR: SYMBOL]
+- Actionable Trade Execution Button: [ACTION: BUY, SYMBOL] or [ACTION: SELL, SYMBOL]`;
+
+    let systemPrompt = SYSTEM_INSTRUCTIONS.CHATBOT;
+    let temp = 0.7;
+
+    if (persona === "trader") {
+      systemPrompt = `You are Alpha Broker, an elite momentum trader agent. Your goal is high-conviction buying/selling setups and price action predictions. Keep recommendations clear, bold, and focused on short-term price targets. Avoid dry disclaimers, put focus on technical entry and exit zones.`;
+      temp = 0.6;
+    } else if (persona === "risk") {
+      systemPrompt = `You are Risk Shield, a conservative risk management agent. Your goal is portfolio protection. Focus on downside protection, beta exposure, asset correlation, stop-loss triggers, Sharpe ratio indicators, and diversification. Identify maximum drawdown risks.`;
+      temp = 0.45;
+    } else if (persona === "quant") {
+      systemPrompt = `You are Quant Oracle, a technical mathematical analyst. You specialize in indicators confluence. Focus heavily on RSI momentum, MACD crossings, Bollinger Bands, Moving Averages (EMA20/SMA50/SMA200) expansions. Reference concrete indicator values in calculations.`;
+      temp = 0.35;
+    }
 
     return await this.callAI(prompt, {
-      systemPrompt: SYSTEM_INSTRUCTIONS.CHATBOT,
-      temperature: 0.7,
-      maxTokens: 500,
+      systemPrompt,
+      temperature: temp,
+      maxTokens: 600,
     });
   }
 
@@ -512,22 +473,39 @@ Provide a 2-3 sentence analysis of the prediction accuracy and any additional fa
   async getEnterprisePrediction(
     stock: Stock,
     basePrediction: Prediction | null
-  ): Promise<Partial<Prediction> & { aiAnalysis: string; priceTarget1W: number; priceTarget1M: number }> {
-    const cacheKey = this.getCacheKey(`enterprise_${stock.symbol}_${stock.price}_v3`);
+  ): Promise<any> {
+    const cacheKey = this.getCacheKey(`enterprise_${stock.symbol}_${stock.price}_v4`);
     const cached = this.getCached(cacheKey);
     if (cached) return JSON.parse(cached);
 
-    const prompt = `You are an expert quantitative analyst. Analyze ${stock.symbol} (${stock.name}).
-Price: $${stock.price} | Change: ${stock.changePercent.toFixed(2)}% | Volume: ${stock.volume}
-Recent 10 candles (OHLCV): ${JSON.stringify(stock.historicalData.slice(-10).map(d => ({ d: d.date, o: +d.open.toFixed(2), h: +d.high.toFixed(2), l: +d.low.toFixed(2), c: +d.close.toFixed(2), v: d.volume })))}
+    const prompt = `Perform a high-fidelity Enterprise-grade AI analysis of ${stock.symbol} (${stock.name}).
+Current State: Price $${stock.price} | Change ${stock.changePercent.toFixed(2)}% | Volume ${stock.volume}
+Historical Context: ${JSON.stringify(stock.historicalData.slice(-12).map(d => ({ d: d.date.split('T')[0], c: +d.close.toFixed(2) })))}
 
-Return ONLY a raw JSON object (no markdown, no code fences) with this exact shape:
-{"recommendation":"buy","confidenceScore":72,"upProbability":65,"downProbability":35,"trendDirection":"bullish","riskLevel":"medium","priceTarget1W":${(stock.price * 1.02).toFixed(2)},"priceTarget1M":${(stock.price * 1.05).toFixed(2)},"aiAnalysis":"2-3 sentence analysis here"}`;
+You must evaluate this asset across professional-grade intelligence vectors.
+Return ONLY a raw JSON object (absolutely no markdown, no backticks, no text outside the object) with the following structure:
+{
+  "recommendation": "buy" | "sell" | "hold",
+  "confidenceScore": number (0-100),
+  "upProbability": number (0-100),
+  "downProbability": number (0-100),
+  "priceTarget1W": number,
+  "priceTarget1M": number,
+  "metrics": {
+    "sentiment": number (0-100),
+    "technical": number (0-100),
+    "fundamental": number (0-100),
+    "momentum": number (0-100),
+    "risk": number (0-100)
+  },
+  "decisionGuidance": "Strategic high-level professional advice (20 words max)",
+  "aiAnalysis": "A deep intelligence summary (30-40 words max)"
+}`;
 
     const response = await this.callAI(prompt, {
-      systemPrompt: SYSTEM_INSTRUCTIONS.STOCK_ANALYST,
-      temperature: 0.2,
-      maxTokens: 400,
+      systemPrompt: "You are the TradexAI Enterprise Core, a quantitative financial intelligence system. You provide institutional-level precision data.",
+      temperature: 0.15,
+      maxTokens: 500,
       responseFormat: "json_object",
     });
 
@@ -555,45 +533,26 @@ export const enhancePrediction = aiService.enhancePrediction.bind(aiService);
 export const getEnterprisePrediction = aiService.getEnterprisePrediction.bind(aiService);
 export const clearAICache = aiService.clearCache.bind(aiService);
 
-export async function saveGeminiApiKey(apiKey: string): Promise<void> {
+export async function saveGroqApiKey(apiKey: string): Promise<void> {
   try {
     let settings: any = {};
     if (typeof chrome !== "undefined" && chrome.storage?.local) {
       const result = await chrome.storage.local.get("stockai_settings");
       settings = result.stockai_settings ? JSON.parse(result.stockai_settings) : {};
-      settings.geminiApiKey = apiKey;
+      settings.groqApiKey = apiKey;
       await chrome.storage.local.set({ stockai_settings: JSON.stringify(settings) });
     } else {
       const raw = localStorage.getItem("stockai_settings");
       settings = raw ? JSON.parse(raw) : {};
-      settings.geminiApiKey = apiKey;
+      settings.groqApiKey = apiKey;
       localStorage.setItem("stockai_settings", JSON.stringify(settings));
     }
   } catch (err) {
-    console.warn("Failed to save Gemini API key:", err);
+    console.warn("Failed to save Groq API key:", err);
   }
 }
 
-export async function saveOpenRouterApiKey(apiKey: string): Promise<void> {
-  try {
-    let settings: any = {};
-    if (typeof chrome !== "undefined" && chrome.storage?.local) {
-      const result = await chrome.storage.local.get("stockai_settings");
-      settings = result.stockai_settings ? JSON.parse(result.stockai_settings) : {};
-      settings.openRouterApiKey = apiKey;
-      await chrome.storage.local.set({ stockai_settings: JSON.stringify(settings) });
-    } else {
-      const raw = localStorage.getItem("stockai_settings");
-      settings = raw ? JSON.parse(raw) : {};
-      settings.openRouterApiKey = apiKey;
-      localStorage.setItem("stockai_settings", JSON.stringify(settings));
-    }
-  } catch (err) {
-    console.warn("Failed to save OpenRouter API key:", err);
-  }
-}
-
-export async function isGeminiConfigured(): Promise<boolean> {
+export async function isAIConfigured(): Promise<boolean> {
   const key = await aiService["getApiKey"]();
   return key.length > 10;
 }

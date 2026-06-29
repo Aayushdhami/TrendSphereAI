@@ -278,7 +278,7 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
       topGainer,
       topLoser,
       sharpeRatio,
-      portfolioBeta: parseFloat((0.5 + Math.random() * 0.8).toFixed(2)),
+      portfolioBeta: parseFloat(((stdDev / 0.15) * 1.0).toFixed(2)) || 1.0,
       maxDrawdown: parseFloat((Math.min(...returns) * 100).toFixed(2)),
       diversificationScore,
     }

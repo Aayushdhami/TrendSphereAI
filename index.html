@@ -1,0 +1,455 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TrendSphereAI - AI-Powered Market Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-primary": "#28d9f3",
+                        "surface": "#f7f9fb",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "secondary-fixed": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001f24",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-primary": "#ffffff",
+                        "primary": "#006876",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-tertiary-container": "#3d4d62",
+                        "secondary-container": "#dae2fd",
+                        "on-secondary-container": "#5c647a",
+                        "primary-fixed": "#9eefff",
+                        "surface-tint": "#006876",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#00545f",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "secondary": "#565e74",
+                        "tertiary-container": "#adbed7",
+                        "background": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#d3e4fe",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-surface-variant": "#3c494c",
+                        "primary-fixed-dim": "#28d9f3",
+                        "outline": "#6c797d",
+                        "on-primary-fixed-variant": "#004e59",
+                        "on-surface": "#191c1e",
+                        "outline-variant": "#bbc9cc",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-background": "#191c1e",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#00cfe8",
+                        "on-error": "#ffffff",
+                        "tertiary": "#505f76",
+                        "surface-container": "#eceef0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.25rem",
+                        "3xl": "1.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "mono": ["Fira Code", "monospace"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-xl": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .aero-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px -4px rgba(0, 207, 232, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+        
+        .aero-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 48px -12px rgba(15, 23, 42, 0.08), 0 4px 16px -4px rgba(0, 207, 232, 0.04);
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 207, 232, 0.12) 0%, rgba(247, 249, 251, 0) 60%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(40px);
+        }
+
+        .btn-hover-glow:hover {
+            box-shadow: 0 0 20px 4px rgba(0, 207, 232, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .blueprint-container {
+            background-color: #f0f4f8;
+            background-image: linear-gradient(rgba(0, 104, 118, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 104, 118, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: relative;
+        }
+
+        .blueprint-glow {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0, 207, 232, 0.2) 0%, transparent 70%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: pulse 4s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .vscode-light {
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .vscode-token-keyword { color: #0000ff; }
+        .vscode-token-string { color: #a31515; }
+        .vscode-token-comment { color: #008000; }
+        .vscode-token-function { color: #795e26; }
+    </style>
+</head>
+<body class="bg-[#f4f7f9] text-on-background font-body-md min-h-screen relative overflow-x-hidden antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Noise Overlay -->
+<svg class="pointer-events-none fixed isolate z-[9999] opacity-[0.02] mix-blend-multiply w-full h-full" height="100%" width="100%">
+<filter id="noise">
+<feTurbulence baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" type="fractalNoise"></feTurbulence>
+</filter>
+<rect fill="transparent" filter="url(#noise)" height="100%" width="100%"></rect>
+</svg>
+<!-- TopNavBar -->
+<nav class="fixed top-4 w-[calc(100%-2rem)] max-w-7xl mx-auto left-0 right-0 z-50 aero-glass rounded-full transition-all duration-300">
+<div class="flex justify-between items-center px-8 py-3 h-[64px]">
+<a class="font-headline-md text-[20px] font-bold text-on-surface flex items-center gap-2 group duration-300 ease-in-out hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">analytics</span>
+                TrendSphereAI
+            </a>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#features">Features</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#architecture">Architecture</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#roadmap">Roadmap</a>
+</div>
+<button class="font-label-md text-label-md bg-on-surface text-surface-container-lowest hover:bg-primary px-6 py-2 rounded-full transition-all duration-300 shadow-md hidden sm:block font-bold">
+                Join Waitlist
+            </button>
+<button class="md:hidden text-on-surface p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative pt-[180px] pb-32 px-6 lg:px-8 max-w-[1400px] mx-auto overflow-hidden">
+<div class="ambient-glow top-[-10%] right-[-5%] opacity-80"></div>
+<div class="ambient-glow bottom-[-10%] left-[-10%] opacity-60"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-center gap-16">
+<div class="lg:w-1/2 flex flex-col items-start text-left">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full aero-glass mb-8">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_8px_rgba(0,207,232,0.8)]"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wide uppercase">v2.0 Beta Now Live</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-6 md:text-[72px] md:leading-[80px] tracking-tight">
+                AI-Powered <br>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-container to-primary">Market Intelligence</span>
+</h1>
+<p class="font-body-lg text-[20px] leading-[32px] text-on-surface-variant mb-10 max-w-xl">
+                Monitor trends, sentiment, and opportunities before the crowd. Institutional-grade predictive analytics designed for the modern investor, replacing noise with absolute clarity.
+            </p>
+<div class="w-full max-w-md mb-8">
+<form class="flex flex-col sm:flex-row gap-3 relative">
+<input class="w-full h-14 px-6 rounded-full aero-glass focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/60 shadow-inner" placeholder="Enter your email" type="email">
+<button class="h-14 px-8 rounded-full bg-on-surface text-surface-container-lowest hover:bg-primary font-label-md text-label-md whitespace-nowrap transition-all duration-300 shadow-xl flex items-center justify-center gap-2 absolute right-1 top-1 bottom-1" type="button">
+                        Join Waitlist
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+</div>
+<div class="flex items-center gap-4 aero-glass px-5 py-2.5 rounded-full">
+<div class="flex -space-x-3">
+<img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-white shadow-sm z-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhLNFwTYA5ut6UvvRBaMAT_afD3enud-hpdHVdkLTFUsNqBRZXtMbOIKnFeuWviqdn3ZFNkPTrwBDfL3bJBf9Qe-IvP9eGSEH2Zn8QtNVvUVfnj45p6UkjUOybPLoDOi5UtCyHLwO2ULgKMg32dgdDjfqplRxg4-7HrNc8c_WKZaHKTZ2o3Hfx4B7f8Nc7KytL_tXQXHlKK9wkSaY2fgxgugvHOnoXKmc_2c8_pku8kMlAx-iieF2x74X3zN9IpCFhfA9UXxskVA">
+<img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-white shadow-sm z-20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDSYWQ1SG1tku6gJQZCq53uT0k2X23ODajyP-P4PlrXml2lVo3YnTejuXEKWcl9HoyASuS3XKQL93C0leCDXgP6n7JZsWqzsUXggHkcXxEJbGptI01dvQSndm38veMi5VGjxbdqJ2M1PR402GtkkZCLMAVYPo6PwD-XWTyi9z5_uP1AVoAHELm-WiGKvLNRwCcaJKv2P-0ZwR6xGFFOKzNW6HKisLt2n3MD-q_7Y9-MWkTE3-IwCk_aVtk1cGdYNp9sGZ63-PxTA">
+<img alt="Avatar" class="w-8 h-8 rounded-full border-2 border-white shadow-sm z-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Z4fYHeyzQY6iUU_dHa_xkqkFxQ7rg2H04L4s1FVlNRerOK-GZkOy9wRjrPb0dPnS83KVa3R5-Eq3o26UOqtEEVT55ZkSPBw1aMAr9RdzTIYWEqvyareYNvIad9LMJz5ToDyZtotUOM3vJhJkbKcrUOvKcrQ5KXrCOZDa2539T6pc4XxIEWgLQ4VUAm0BlAfUNenbze0wGQjibbOWuX8KGPr63CDzAYaWp74EzG_Qku5vYz4fHSxKLu6gQOJFuM4JxL9cSPHKUQ">
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Join <strong class="text-on-surface font-bold">1,247</strong> investors ahead of the curve.</span>
+</div>
+</div>
+<div class="lg:w-1/2 relative">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-transparent rounded-3xl transform rotate-3 scale-105 filter blur-xl"></div>
+<div class="aero-panel rounded-2xl p-2 relative z-10 transform transition-transform hover:-translate-y-2 hover:rotate-1 duration-700">
+<div class="w-full bg-white/50 h-10 rounded-t-xl border-b border-white/40 flex items-center px-4 gap-2 backdrop-blur-md">
+<div class="w-3 h-3 rounded-full bg-error/80 shadow-[0_0_8px_rgba(186,26,26,0.4)]"></div>
+<div class="w-3 h-3 rounded-full bg-outline/40"></div>
+<div class="w-3 h-3 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,207,232,0.6)]"></div>
+</div>
+<img alt="TrendSphereAI Dashboard Interface Mockup" class="w-full h-auto object-cover rounded-b-xl" src="https://lh3.googleusercontent.com/aida/ADBb0ui4GCW9XU9-tTGzYZlq5xkKjGUFPQmGzM2ETHK76xlTSnwYZsLvRycSjBSLxHqvEKZvvlJIDQ6XIabHrV-9wRi__xpgXf9QM6Wt_2LHbYpnHnTqWHsCrpX8oJrpumbrJ3iTU82qTizMGxWgo0uolDhAr2Wo4vdxKWpUZIbx-73S6KWrhjMbTx4VGRL2HWsQ3_P5ar3QJutSVIpnNf9Rpg1a4scYYlkaDS5KIHgIsu07x_DSaj4e3nXsbA">
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Bar -->
+<div class="w-full aero-glass border-y border-white/60 py-10 relative z-20">
+<div class="max-w-container-max mx-auto px-6 lg:px-8">
+<p class="text-center font-label-md text-[13px] text-on-surface-variant mb-8 uppercase tracking-[0.15em] font-semibold opacity-70">Powered by Institutional-Grade Infrastructure</p>
+<div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[32px]">account_balance</span>
+<span class="font-headline-md text-[22px] font-bold tracking-tight">BankGrade</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[32px]">query_stats</span>
+<span class="font-headline-md text-[22px] font-bold tracking-tight">AlphaData</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[32px]">security</span>
+<span class="font-headline-md text-[22px] font-bold tracking-tight">SecureStream</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[32px]">speed</span>
+<span class="font-headline-md text-[22px] font-bold tracking-tight">FastAPI</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Features Section -->
+<section class="py-32 relative" id="features">
+<div class="max-w-[1400px] mx-auto px-6 lg:px-8 relative z-10">
+<div class="mb-20 text-center max-w-3xl mx-auto">
+<h2 class="font-headline-lg text-[48px] leading-[56px] text-on-surface mb-6 tracking-tight">Precision Tools for Modern Markets</h2>
+<p class="font-body-lg text-[20px] text-on-surface-variant">A comprehensive suite designed to extract actionable signals from global noise, unified under a single, intuitive interface.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+<!-- Card 1 -->
+<div class="col-span-1 md:col-span-2 aero-panel rounded-3xl p-10 group hover:-translate-y-1 transition-all duration-500 overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary-container/20 transition-colors duration-700"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 rounded-2xl aero-glass flex items-center justify-center mb-8 text-primary shadow-sm border border-white">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: &quot;FILL&quot; 1;">insights</span>
+</div>
+<h3 class="font-headline-md text-[28px] text-on-surface mb-4">AI Sentiment Engine</h3>
+<p class="font-body-md text-[18px] text-on-surface-variant leading-relaxed max-w-xl">
+                        Process thousands of articles, social posts, and earnings transcripts instantly. Our NLP models extract nuanced sentiment shifts before they hit traditional news outlets.
+                    </p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="col-span-1 aero-panel rounded-3xl p-10 group hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-2xl -ml-10 -mb-10 group-hover:bg-primary/10 transition-colors duration-700"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 rounded-2xl aero-glass flex items-center justify-center mb-8 text-primary shadow-sm border border-white">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: &quot;FILL&quot; 1;">notifications_active</span>
+</div>
+<h3 class="font-headline-md text-[24px] text-on-surface mb-4">Smart Alerts</h3>
+<p class="font-body-md text-[16px] text-on-surface-variant leading-relaxed">
+                        Configure complex, multi-variable triggers. Get notified when sentiment drops while volume spikes, or when specific executive language indicates a strategy shift.
+                    </p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="col-span-1 aero-panel rounded-3xl p-10 group hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-2xl -ml-10 -mt-10 group-hover:bg-primary/10 transition-colors duration-700"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 rounded-2xl aero-glass flex items-center justify-center mb-8 text-primary shadow-sm border border-white">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: &quot;FILL&quot; 1;">monitoring</span>
+</div>
+<h3 class="font-headline-md text-[24px] text-on-surface mb-4">Real-Time Monitoring</h3>
+<p class="font-body-md text-[16px] text-on-surface-variant leading-relaxed">
+                        Watch trends evolve minute-by-minute on our highly optimized, webGL-powered dashboard. Data flows seamlessly without refreshing.
+                    </p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="col-span-1 md:col-span-2 aero-panel rounded-3xl p-10 relative overflow-hidden group hover:-translate-y-1 transition-all duration-500 flex flex-col md:flex-row items-center gap-8">
+<div class="relative z-10 md:w-1/2">
+<div class="w-14 h-14 rounded-2xl aero-glass flex items-center justify-center mb-8 text-primary shadow-sm border border-white">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: &quot;FILL&quot; 1;">extension</span>
+</div>
+<h3 class="font-headline-md text-[28px] text-on-surface mb-4">Browser Extension</h3>
+<p class="font-body-md text-[18px] text-on-surface-variant mb-6">
+                            Analyze any web page, SEC filing, or financial news article instantly right from your browser window.
+                        </p>
+</div>
+<div class="md:w-1/2 relative flex justify-center">
+<div class="absolute inset-0 bg-primary-container/20 blur-3xl rounded-full"></div>
+<img alt="Browser Extension Mockup" class="relative z-20 w-[120%] max-w-[400px] h-auto rounded-2xl border border-white/60 shadow-2xl group-hover:-translate-y-2 group-hover:-rotate-2 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/ADBb0ug0yGTtK8cegtYMnF4UbQZnMv7R3QtDEuGpB_8QwmD4th0gjbEvmYns12ywLGldfAFOGqXpkQRWngDqlWEA0eAtpI4OJYCIxStpWUjQt0txoh2ReH7NSJm18-D1m67cBMAxtVJgYG7I2Vy16b0BistYN6SpGsXLL9eqyorJh3Je6s0wxEtacb7CPiD-jnj32WWV2dsnPKl7LMRzE0pkt4gpZTeAsxALI9PwbPZ5mowbwYix4V4SwXWYUw">
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Architecture Section -->
+<section class="py-32 relative overflow-hidden" id="architecture">
+<div class="max-w-[1400px] mx-auto px-6 lg:px-8 relative z-10">
+<div class="flex flex-col lg:flex-row items-center gap-20">
+<div class="lg:w-1/3">
+<h2 class="font-headline-lg text-[48px] leading-[56px] text-on-surface mb-8 tracking-tight">Enterprise-Grade Intelligence</h2>
+<p class="font-body-lg text-[20px] text-on-surface-variant mb-10 leading-relaxed">
+                        Built on a resilient, low-latency microservices architecture. Our proprietary ingestion engine processes terabytes of unstructured data, structuring it for immediate querying via our GraphQL API or secure WebSocket streams.
+                    </p>
+<ul class="space-y-6 font-body-md text-[18px] text-on-surface-variant">
+<li class="flex items-center gap-4 aero-glass p-4 rounded-xl">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+<span class="font-medium">Sub-100ms API response times</span>
+</li>
+<li class="flex items-center gap-4 aero-glass p-4 rounded-xl">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<span class="font-medium">SOC2 Type II compliant infrastructure</span>
+</li>
+<li class="flex items-center gap-4 aero-glass p-4 rounded-xl">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">dns</span>
+</div>
+<span class="font-medium">Redundant multi-region deployment</span>
+</li>
+</ul>
+</div>
+<div class="lg:w-2/3 w-full relative">
+<div class="blueprint-glow top-1/4 left-1/4"></div>
+<div class="blueprint-glow bottom-1/4 right-1/4" style="animation-delay: 2s;"></div>
+<div class="aero-panel p-3 rounded-3xl relative z-10">
+<div class="blueprint-container rounded-2xl p-8 flex justify-center items-center min-h-[500px] border border-primary/10 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-white/50 z-0"></div>
+<img alt="TrendSphereAI Architecture Diagram" class="max-w-full h-auto drop-shadow-2xl rounded-xl relative z-10" src="https://lh3.googleusercontent.com/aida/ADBb0ujXVkn40dFtpFH9UCOGU7g78yqL6FdPC4-Y1mdbVmz2C_uHu9Ug8AersGZ8wDoVhHZqezysDoKChKq2q8Z0V3gF0ryj6BILJTh8G4CaRRkK6wmujBD2nEVb0ZdZQOg3GWYR2lKUzSw9ZIndRrjOhWka37ptUtdgJp8nFC2mxOp9THGrDY4AoC_hKRirzx_Q2lwWpqQ97_-uO_YiAmHKL4VLXbke-WCqjSnep9boycWznN-xT4X2Ow9EYQ">
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Founder Section (Modern Terminal) -->
+<section class="py-32 border-t border-white/40 relative">
+<div class="ambient-glow top-0 left-1/2 -translate-x-1/2 opacity-30 w-full h-[400px]"></div>
+<div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10">
+<h2 class="font-headline-md text-[32px] text-center text-on-surface mb-16 tracking-tight font-bold">Building in Public</h2>
+<div class="aero-panel rounded-2xl overflow-hidden shadow-2xl border border-white">
+<!-- VS Code Header -->
+<div class="bg-[#f3f3f3] px-4 py-3 flex items-center border-b border-gray-200">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+<div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+<div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+</div>
+<div class="flex-1 flex justify-center">
+<div class="bg-white px-8 py-1 rounded text-xs text-gray-600 font-medium border border-gray-200 shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">description</span>
+                            mission.js — trendsphere
+                        </div>
+</div>
+</div>
+<!-- Terminal Body -->
+<div class="p-8 md:p-12 font-mono text-[15px] leading-loose vscode-light relative">
+<div class="absolute left-0 top-0 bottom-0 w-12 bg-[#f9f9f9] border-r border-gray-200 flex flex-col items-center py-8 text-gray-400 text-sm select-none">
+<span class="">1</span><span class="">2</span><span class="">3</span><span class="">4</span><span class="">5</span><span class="">6</span><span class="">7</span><span class="">8</span><span class="">9</span>
+</div>
+<div class="pl-8">
+<p class="mb-2"><span class="vscode-token-keyword">const</span> <span class="vscode-token-function">FounderMission</span> = () =&gt; {</p>
+<p class="mb-2 pl-6"><span class="vscode-token-keyword">return</span> (</p>
+<p class="mb-2 pl-12 text-gray-600">
+<span class="vscode-token-string">"We believe institutional-grade AI shouldn't be locked inside hedge funds. I spent 6 years building high-frequency trading systems, and realized the real alpha is in early sentiment detection. We're democratizing that access."</span>
+</p>
+<p class="mb-2 pl-6">);</p>
+<p class="mb-8">};</p>
+<div class="flex items-center gap-5 mt-10 pt-8 border-t border-gray-100">
+<img alt="Founder Portrait" class="w-14 h-14 rounded-full border-2 border-white shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3Ts9Ft5kUwHFDYZ-HHmlkAZfp2hXfE9_wIGSzz4tDI1TkpkS0oo_o7FkhBCyI8P_DMtMn0bYE7tnahWNN0jAwFBE2uYwG895bEgbJd1exs2VSJRYBnHNV7ZT9j52Nz8wo8WvFB_iJlhxdkCUtiGAGqWNd2KQzNJ-aY9NNrSrRgIDBNkD3unGaapj3R5yh98_nCXH_beaczb8Caxavk1i0PKudoActa5rotQxFKAscFgv3rmnUERZ0ahOBc9QTpQhWtY7MvrVdRQ">
+<div>
+<p class="font-label-md text-[16px] text-[#333] font-bold font-sans">Alex Mercer</p>
+<p class="font-label-sm text-[14px] text-[#795e26] font-sans">Founder &amp; AI Systems Engineer</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-16 aero-glass border-t border-white/60 mt-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-[1400px] mx-auto px-6 lg:px-8">
+<div class="flex flex-col gap-5">
+<a class="font-headline-sm text-[24px] font-bold text-on-surface flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">analytics</span>
+                    TrendSphereAI
+                </a>
+<p class="font-body-sm text-[16px] text-on-surface-variant max-w-sm">
+                    Predictive market intelligence for the modern era.
+                </p>
+<p class="font-body-sm text-[14px] text-on-surface-variant/70 mt-6 font-medium">
+                    © 2024 TrendSphereAI. All rights reserved.
+                </p>
+</div>
+<div class="flex flex-col md:items-end justify-start gap-4">
+<div class="flex flex-wrap gap-8 mt-6 md:mt-0">
+<a class="font-label-md text-[15px] text-on-surface-variant hover:text-primary transition-colors duration-200 font-semibold" href="#">Documentation</a>
+<a class="font-label-md text-[15px] text-on-surface-variant hover:text-primary transition-colors duration-200 font-semibold" href="#">Privacy Policy</a>
+<a class="font-label-md text-[15px] text-on-surface-variant hover:text-primary transition-colors duration-200 font-semibold" href="#">Terms of Service</a>
+<a class="font-label-md text-[15px] text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center gap-2 font-semibold" href="#">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,207,232,0.8)] inline-block"></span>
+                        Status
+                    </a>
+</div>
+</div>
+</div>
+</footer>
+
+
+</body></html>  

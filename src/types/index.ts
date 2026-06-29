@@ -252,8 +252,7 @@ export interface UserSettings {
   installedAt: number
   localCurrency?: string
   exchangeRates?: Record<string, number>
-  geminiApiKey?: string
-  openRouterApiKey?: string
+  groqApiKey?: string
   enableAIChatbot?: boolean
   enableVoiceAssistant?: boolean
   enableKeyboardShortcuts?: boolean

@@ -17,12 +17,14 @@ export async function saveToStorage<T>(key: string, data: T): Promise<void> {
   try {
     if (typeof chrome !== "undefined" && chrome.storage?.local) {
       await chrome.storage.local.set({ [key]: JSON.stringify(data) })
-    } else {
+    } else if (typeof localStorage !== "undefined") {
       localStorage.setItem(key, JSON.stringify(data))
     }
   } catch (err) {
     console.warn("Storage save failed, falling back to localStorage:", err)
-    localStorage.setItem(key, JSON.stringify(data))
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(key, JSON.stringify(data))
+    }
   }
 }
 
@@ -33,14 +35,18 @@ export async function loadFromStorage<T>(key: string): Promise<T | null> {
       const result = await chrome.storage.local.get(key)
       const raw = result[key]
       return raw ? JSON.parse(raw) : null
-    } else {
+    } else if (typeof localStorage !== "undefined") {
       const raw = localStorage.getItem(key)
       return raw ? JSON.parse(raw) : null
     }
+    return null
   } catch (err) {
     console.warn("Storage load failed:", err)
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : null
+    if (typeof localStorage !== "undefined") {
+      const raw = localStorage.getItem(key)
+      return raw ? JSON.parse(raw) : null
+    }
+    return null
   }
 }
 
@@ -49,11 +55,13 @@ export async function removeFromStorage(key: string): Promise<void> {
   try {
     if (typeof chrome !== "undefined" && chrome.storage?.local) {
       await chrome.storage.local.remove(key)
-    } else {
+    } else if (typeof localStorage !== "undefined") {
       localStorage.removeItem(key)
     }
   } catch {
-    localStorage.removeItem(key)
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem(key)
+    }
   }
 }
 

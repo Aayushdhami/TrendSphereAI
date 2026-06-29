@@ -54,6 +54,9 @@ const StockCard: React.FC<StockCardProps> = ({ symbol, compact = false, onSelect
             <div className="text-sm font-mono font-semibold text-white">
               {formatCurrency(stock.price)}
             </div>
+            <div>
+              <h1>Jello Good that you are here</h1>
+            </div>
             <div className={`text-xs font-mono font-medium ${isUp ? "text-gain" : "text-loss"}`}>
               {formatPercent(stock.changePercent)}
             </div>

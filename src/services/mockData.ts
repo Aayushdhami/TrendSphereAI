@@ -25,9 +25,15 @@ export function generateHistoricalData(
     const change = price * (trend + randomInRange(-volatility, volatility))
     price = Math.max(price + change, 1)
 
-    const dayHigh = price * (1 + randomInRange(0.002, 0.02))
-    const dayLow = price * (1 - randomInRange(0.002, 0.02))
+    // Calculate open and close first
     const open = price + randomInRange(-price * 0.01, price * 0.01)
+    
+    // Ensure day high and low bounds are mathematically valid
+    const dayHigh = Math.max(open, price) * (1 + randomInRange(0.001, 0.015))
+    let dayLow = Math.min(open, price) * (1 - randomInRange(0.001, 0.015))
+    // Prevent zero or negative prices
+    dayLow = Math.max(dayLow, 0.01)
+
     const volume = Math.floor(randomInRange(5000000, 80000000))
 
     data.push({

@@ -15,7 +15,7 @@ class MarketService {
     }
   }
 
-  public get engine() {
+  public get providers() {
     if (!this.manager) {
       // Lazy init with empty keys if not already initialized
       this.initialize({ finnhub: "", fmp: "", alpha: "" });

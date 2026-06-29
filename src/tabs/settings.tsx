@@ -12,19 +12,16 @@ function SettingsPage() {
     alertPreferences,
     dashboardPreferences,
     apiKeys,
-    geminiApiKey,
-    openRouterApiKey,
+    groqApiKey,
     updateSettings,
     setApiKeys,
-    setGeminiApiKey,
-    setOpenRouterApiKey,
+    setGroqApiKey,
     toggleFeature,
     loadStoredSettings,
   } = settings
 
   const [localKeys, setLocalKeys] = useState(apiKeys)
-  const [localGeminiKey, setLocalGeminiKey] = useState(geminiApiKey || "")
-  const [localOpenRouterKey, setLocalOpenRouterKey] = useState(openRouterApiKey || "")
+  const [localGroqKey, setLocalGroqKey] = useState(groqApiKey || "")
   const [saveStatus, setSaveStatus] = useState("")
   const [storageInfo, setStorageInfo] = useState<{ usedMB: string; quotaMB: string } | null>(null)
 
@@ -32,16 +29,14 @@ function SettingsPage() {
     loadStoredSettings().then(() => {
       const state = useSettingsStore.getState()
       setLocalKeys(state.apiKeys)
-      setLocalGeminiKey(state.geminiApiKey || "")
-      setLocalOpenRouterKey(state.openRouterApiKey || "")
+      setLocalGroqKey(state.groqApiKey || "")
     })
     getStorageEstimate().then(setStorageInfo)
   }, [])
 
   const handleSaveKeys = async () => {
     await setApiKeys(localKeys)
-    await setGeminiApiKey(localGeminiKey)
-    await setOpenRouterApiKey(localOpenRouterKey)
+    await setGroqApiKey(localGroqKey)
     setSaveStatus("Settings saved successfully")
     setTimeout(() => setSaveStatus(""), 3000)
     useStockStore.getState().initStocks()
@@ -101,30 +96,17 @@ function SettingsPage() {
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-surface-400 mb-2 block uppercase tracking-wider">OpenRouter API Key</label>
+                  <label className="text-xs font-bold text-surface-400 mb-2 block uppercase tracking-wider">Groq API Key</label>
                   <input
                     type="password"
-                    value={localOpenRouterKey}
-                    onChange={(e) => setLocalOpenRouterKey(e.target.value)}
-                    placeholder="sk-or-v1-…"
+                    value={localGroqKey}
+                    onChange={(e) => setLocalGroqKey(e.target.value)}
+                    placeholder="gsk_..."
                     className="input-dark text-xs"
                   />
                   <p className="text-[10px] text-surface-500 mt-2">
-                    Required for AI Analysis, Market Summaries &amp; Enterprise Predictions. Get a free key at{" "}
-                    <a href="https://openrouter.ai/keys" target="_blank" className="text-brand-400 hover:underline">openrouter.ai/keys</a>.
-                  </p>
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-surface-400 mb-2 block uppercase tracking-wider">Gemini 2.0 Flash API Key</label>
-                  <input
-                    type="password"
-                    value={localGeminiKey}
-                    onChange={(e) => setLocalGeminiKey(e.target.value)}
-                    placeholder="Enter Google AI Studio Key"
-                    className="input-dark text-xs"
-                  />
-                  <p className="text-[10px] text-surface-500 mt-2">
-                    Optional legacy key. Get one free at <a href="https://aistudio.google.com/" target="_blank" className="text-brand-400 hover:underline">Google AI Studio</a>.
+                    Required for AI Analysis, Market Summaries &amp; Predictions. Get your key at{" "}
+                    <a href="https://console.groq.com/keys" target="_blank" className="text-brand-400 hover:underline">console.groq.com/keys</a>.
                   </p>
                 </div>
                 <div className="pt-2 space-y-3">

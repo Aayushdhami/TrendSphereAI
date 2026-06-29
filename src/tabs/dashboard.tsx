@@ -10,12 +10,13 @@ import AIChatbot from "~src/components/AIChatbot"
 import SparklineChart from "~src/components/SparklineChart"
 import StockCard from "~src/components/StockCard"
 import PredictionGauge from "~src/components/PredictionGauge"
+import AddPositionModal from "~src/components/AddPositionModal"
 import { formatCurrency, formatPercent, formatLargeNumber, formatRelativeTime, formatChartPrice } from "~src/utils/helpers"
 import { RECOMMENDATION_COLORS, RISK_COLORS } from "~src/utils/constants"
 import { getDataSourceStatus } from "~src/services/dataAggregator"
 import { searchSymbols } from "~src/services/finnhubService"
 import { generateMarketSummary, getEnterprisePrediction } from "~src/services/geminiService"
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid, Cell, PieChart, Pie } from "recharts"
+import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid, Cell, PieChart, Pie, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts"
 import { motion, AnimatePresence } from "framer-motion"
 import "~style.css"
 
@@ -36,6 +37,7 @@ function DashboardPage() {
   const [currentPage, setCurrentPage] = useState<DashboardSection>("dashboard")
   const [activeDashboardTab, setActiveDashboardTab] = useState<"terminal" | "portfolio" | "radar">("terminal")
   const [isAIChatOpen, setIsAIChatOpen] = useState(false)
+  const [isAddPositionOpen, setIsAddPositionOpen] = useState(false)
   const [aiInsight, setAiInsight] = useState<string | null>(null)
   const [chartTimeframe, setChartTimeframe] = useState<"1M" | "6M" | "1Y" | "2Y" | "5Y" | "ALL">("6M")
   
@@ -700,32 +702,65 @@ function DashboardPage() {
                   ) : (
                     <>
                       {enterprisePrediction ? (
-                        <div className="space-y-3 animate-fadeIn">
-                          <div className="p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
-                            <div className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                              Quantum AI Intelligence Report
+                        <div className="space-y-4 animate-fadeIn">
+                          {/* Strategic Guidance Header */}
+                          <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20 shadow-lg shadow-brand-500/5">
+                            <div className="text-[10px] font-black text-brand-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                              <span className="flex h-2 w-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                              </span>
+                              Executive Decision Guidance
                             </div>
-                            <p className="text-[11px] leading-relaxed text-surface-200 font-medium italic">
-                              "{enterprisePrediction.aiAnalysis}"
-                            </p>
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="p-2.5 rounded-xl bg-surface-950/40 border border-white/[0.03]">
-                              <div className="text-[10px] text-surface-500 font-bold uppercase mb-1">Target (1W)</div>
-                              <div className="text-xs font-mono font-black text-gain">{formatCurrency(enterprisePrediction.priceTarget1W)}</div>
-                            </div>
-                            <div className="p-2.5 rounded-xl bg-surface-950/40 border border-white/[0.03]">
-                              <div className="text-[10px] text-surface-500 font-bold uppercase mb-1">Target (1M)</div>
-                              <div className="text-xs font-mono font-black text-indigo-400">{formatCurrency(enterprisePrediction.priceTarget1M)}</div>
+                            <div className="text-sm font-bold text-white leading-tight">
+                              {enterprisePrediction.decisionGuidance}
                             </div>
                           </div>
 
-                          <div className="flex justify-between items-center text-xs p-2.5 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
-                            <span className="text-surface-400 font-medium">AI Conviction</span>
-                            <span className="text-indigo-400 font-mono font-black">{enterprisePrediction.confidenceScore}%</span>
+                          {/* Intelligence Radar Vector */}
+                          <div className="glass-card p-0 h-[180px] flex items-center justify-center overflow-hidden bg-surface-950/40">
+                             <ResponsiveContainer width="100%" height="100%">
+                              <RadarChart cx="50%" cy="50%" outerRadius="65%" data={[
+                                { subject: 'Sentiment', A: enterprisePrediction.metrics?.sentiment || 50, fullMark: 100 },
+                                { subject: 'Technical', A: enterprisePrediction.metrics?.technical || 50, fullMark: 100 },
+                                { subject: 'Fundamental', A: enterprisePrediction.metrics?.fundamental || 50, fullMark: 100 },
+                                { subject: 'Momentum', A: enterprisePrediction.metrics?.momentum || 50, fullMark: 100 },
+                                { subject: 'Risk', A: 100 - (enterprisePrediction.metrics?.risk || 50), fullMark: 100 },
+                              ]}>
+                                <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 8, fontWeight: 700 }} />
+                                <Radar
+                                  name="Market Intelligence"
+                                  dataKey="A"
+                                  stroke="#6366f1"
+                                  fill="#6366f1"
+                                  fillOpacity={0.4}
+                                />
+                              </RadarChart>
+                            </ResponsiveContainer>
                           </div>
+
+                          {/* Price Target Vectors */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="p-2.5 rounded-xl bg-surface-950/60 border border-white/[0.04] text-center">
+                              <div className="text-[9px] text-surface-500 font-bold uppercase mb-1">ST Target (1W)</div>
+                              <div className="text-sm font-mono font-black text-gain">{formatCurrency(enterprisePrediction.priceTarget1W)}</div>
+                              <div className="text-[8px] text-gain/60 font-bold">+{((enterprisePrediction.priceTarget1W / stock.price - 1) * 100).toFixed(1)}% Est.</div>
+                            </div>
+                            <div className="p-2.5 rounded-xl bg-surface-950/60 border border-white/[0.04] text-center">
+                              <div className="text-[9px] text-surface-500 font-bold uppercase mb-1">LT Target (1M)</div>
+                              <div className="text-sm font-mono font-black text-indigo-400">{formatCurrency(enterprisePrediction.priceTarget1M)}</div>
+                              <div className="text-[8px] text-indigo-400/60 font-bold">+{((enterprisePrediction.priceTarget1M / stock.price - 1) * 100).toFixed(1)}% Est.</div>
+                            </div>
+                          </div>
+
+                           {/* Analysis Summary */}
+                           <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                             <div className="text-[9px] font-bold text-surface-400 uppercase tracking-widest mb-1">Intelligence Summary</div>
+                             <p className="text-[10px] leading-relaxed text-surface-300 font-medium italic">
+                                "{enterprisePrediction.aiAnalysis}"
+                             </p>
+                           </div>
                         </div>
                       ) : isAIAnalyzing ? (
                         <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
@@ -1782,16 +1817,24 @@ function DashboardPage() {
                   <div className="xl:col-span-2 glass-card p-0 border-white/[0.05] overflow-hidden flex flex-col">
                     <div className="px-6 py-4 border-b border-white/[0.04] bg-white/[0.01] flex justify-between items-center">
                       <h3 className="text-sm font-black text-white uppercase tracking-wider font-display">Equity Positions</h3>
-                      <button 
-                        onClick={async () => {
-                          const insight = await generateMarketSummary(stocks, predictions)
-                          setAiInsight(insight)
-                          setIsAIChatOpen(true)
-                        }}
-                        className="text-[9px] font-bold text-brand-400 hover:text-white transition-colors uppercase tracking-widest"
-                      >
-                        Run AI Portfolio Audit
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => setIsAddPositionOpen(true)}
+                          className="btn-primary px-3 py-1.5 text-[9px] rounded-lg shadow-md shadow-brand-500/20 uppercase font-black tracking-widest"
+                        >
+                          + Add Asset
+                        </button>
+                        <button 
+                          onClick={async () => {
+                            const insight = await generateMarketSummary(stocks, predictions)
+                            setAiInsight(insight)
+                            setIsAIChatOpen(true)
+                          }}
+                          className="text-[9px] font-bold text-brand-400 hover:text-white transition-colors uppercase tracking-widest"
+                        >
+                          Run Portfolio Audit
+                        </button>
+                      </div>
                     </div>
                     <div className="overflow-x-auto no-scrollbar">
                       <table className="w-full text-left border-collapse">
@@ -2082,6 +2125,9 @@ function DashboardPage() {
           </div>
         </button>
       )}
+
+      {/* Add Position Modal */}
+      <AddPositionModal isOpen={isAddPositionOpen} onClose={() => setIsAddPositionOpen(false)} />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import type { UserSettings } from "~src/types"
 import type { ApiKeys } from "~src/services/apiConfig"
 import { loadApiKeys, saveApiKeys, getApiStatus } from "~src/services/apiConfig"
 import { saveToStorage, loadFromStorage, STORAGE_KEYS } from "~src/services/storageService"
-import { saveGeminiApiKey, saveOpenRouterApiKey } from "~src/services/geminiService"
+import { saveGroqApiKey } from "~src/services/geminiService"
 import { DEFAULT_FAVORITES } from "~src/utils/constants"
 
 const COUNTRY_CURRENCY: Record<string, string> = {
@@ -31,8 +31,7 @@ interface SettingsState extends UserSettings {
   loadStoredSettings: () => Promise<void>
   updateCurrency: (currency: string) => Promise<void>
   detectCurrency: () => Promise<void>
-  setGeminiApiKey: (key: string) => Promise<void>
-  setOpenRouterApiKey: (key: string) => Promise<void>
+  setGroqApiKey: (key: string) => Promise<void>
   toggleFeature: (feature: "enableAIChatbot" | "enableVoiceAssistant" | "enableKeyboardShortcuts") => void
 }
 
@@ -60,8 +59,7 @@ const defaultSettings: UserSettings = {
   installedAt: Date.now(),
   localCurrency: "USD",
   exchangeRates: { USD: 1 },
-  // geminiApiKey: "",
-  // openRouterApiKey: "",
+  groqApiKey: "",
   enableAIChatbot: true,
   enableVoiceAssistant: false,
   enableKeyboardShortcuts: true,
@@ -103,14 +101,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     })
   },
 
-  setGeminiApiKey: async (key: string) => {
-    await saveGeminiApiKey(key)
-    set({ geminiApiKey: key })
-  },
-
-  setOpenRouterApiKey: async (key: string) => {
-    await saveOpenRouterApiKey(key)
-    set({ openRouterApiKey: key })
+  setGroqApiKey: async (key: string) => {
+    await saveGroqApiKey(key)
+    set({ groqApiKey: key })
   },
 
   toggleFeature: (feature) => {
@@ -185,8 +178,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const savedSettings = await loadFromStorage<UserSettings>(STORAGE_KEYS.SETTINGS)
 
     // Load AI keys from stockai_settings (where geminiService.ts reads from)
-    let geminiApiKey = ""
-    let openRouterApiKey = defaultSettings.openRouterApiKey ?? ""
+    let groqApiKey = defaultSettings.groqApiKey || ""
     try {
       let aiSettings: any = {}
       if (typeof chrome !== "undefined" && chrome.storage?.local) {
@@ -196,20 +188,17 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         const raw = localStorage.getItem("stockai_settings")
         aiSettings = raw ? JSON.parse(raw) : {}
       }
-      geminiApiKey = aiSettings.geminiApiKey || ""
-      // If openRouterApiKey not yet persisted to stockai_settings, seed it from default
-      if (aiSettings.openRouterApiKey) {
-        openRouterApiKey = aiSettings.openRouterApiKey
-      } else if (openRouterApiKey) {
-        // Persist the default key so getApiKey() can find it immediately
-        await saveOpenRouterApiKey(openRouterApiKey)
+
+      if (aiSettings.groqApiKey) {
+        groqApiKey = aiSettings.groqApiKey
+      } else if (groqApiKey) {
+        await saveGroqApiKey(groqApiKey)
       }
     } catch { }
 
     set({
       ...(savedSettings || {}),
-      geminiApiKey,
-      openRouterApiKey,
+      groqApiKey,
       apiKeys: keys,
       apiStatus: getApiStatus(keys),
       isLoaded: true,
@@ -245,8 +234,7 @@ useSettingsStore.subscribe((state, prevState) => {
     installedAt: state.installedAt,
     localCurrency: state.localCurrency,
     exchangeRates: state.exchangeRates,
-    geminiApiKey: state.geminiApiKey,
-    openRouterApiKey: state.openRouterApiKey,
+    groqApiKey: state.groqApiKey,
     enableAIChatbot: state.enableAIChatbot,
     enableVoiceAssistant: state.enableVoiceAssistant,
     enableKeyboardShortcuts: state.enableKeyboardShortcuts,
