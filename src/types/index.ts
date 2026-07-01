@@ -256,6 +256,8 @@ export interface UserSettings {
   enableAIChatbot?: boolean
   enableVoiceAssistant?: boolean
   enableKeyboardShortcuts?: boolean
+  brokerPlatform?: string
+  brokerApiKey?: string
 }
 
 // ==================== ENUMS & UTILITY TYPES ====================

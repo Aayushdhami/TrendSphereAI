@@ -19,10 +19,13 @@ function OnboardingPage() {
   } = useSettingsStore()
   const addToWatchlist = useStockStore((s) => s.addToWatchlist)
 
+
+  const addurl = "https://apiconnect.angelone.in/rest/secure/angelbroking/user/v1/logout"
   const [localKeys, setLocalKeys] = useState({
     finnhub: apiKeys.finnhub || "",
     alphaVantage: apiKeys.alphaVantage || "",
     fmp: apiKeys.fmp || "",
+    URL: addurl,
   })
   const [localEmail, setLocalEmail] = useState(email)
 
@@ -34,6 +37,7 @@ function OnboardingPage() {
         finnhub: state.apiKeys.finnhub || "",
         alphaVantage: state.apiKeys.alphaVantage || "",
         fmp: state.apiKeys.fmp || "",
+        URL: addurl,
       })
       setLocalEmail(state.email)
     })
@@ -80,11 +84,10 @@ function OnboardingPage() {
         <div className="flex items-center gap-2 mb-8">
           {steps.map((s, i) => (
             <React.Fragment key={s}>
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all duration-300 ${
-                i <= stepIndex 
-                  ? "bg-gradient-to-br from-brand-400 via-indigo-500 to-brand-600 text-white shadow-lg shadow-brand-500/25 border border-white/[0.06] scale-105 font-bold" 
-                  : "bg-surface-950/40 border border-white/[0.03] text-surface-500 font-semibold"
-              }`}>{i + 1}</div>
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all duration-300 ${i <= stepIndex
+                ? "bg-gradient-to-br from-brand-400 via-indigo-500 to-brand-600 text-white shadow-lg shadow-brand-500/25 border border-white/[0.06] scale-105 font-bold"
+                : "bg-surface-950/40 border border-white/[0.03] text-surface-500 font-semibold"
+                }`}>{i + 1}</div>
               {i < steps.length - 1 && (
                 <div className={`flex-1 h-0.5 rounded transition-all duration-300 ${i < stepIndex ? "bg-brand-500" : "bg-white/[0.04]"}`} />
               )}
@@ -132,11 +135,10 @@ function OnboardingPage() {
                     <button
                       key={stock.symbol}
                       onClick={() => toggleStock(stock.symbol)}
-                      className={`p-3 rounded-xl text-left transition-all border ${
-                        isSelected
-                          ? "bg-gradient-to-br from-brand-500/15 to-indigo-500/15 border-brand-500/35 text-white shadow-md shadow-brand-500/5 scale-[1.02]"
-                          : "bg-surface-950/40 border-white/[0.03] hover:border-white/[0.08] text-surface-400 hover:text-surface-200 transition-all duration-300"
-                      }`}
+                      className={`p-3 rounded-xl text-left transition-all border ${isSelected
+                        ? "bg-gradient-to-br from-brand-500/15 to-indigo-500/15 border-brand-500/35 text-white shadow-md shadow-brand-500/5 scale-[1.02]"
+                        : "bg-surface-950/40 border-white/[0.03] hover:border-white/[0.08] text-surface-400 hover:text-surface-200 transition-all duration-300"
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-bold">{stock.symbol}</span>
@@ -205,23 +207,21 @@ function OnboardingPage() {
                 StockAI is ready to monitor {favoriteStocks.length} stocks with
                 {localKeys.finnhub ? " real-time Finnhub data feeds" : " simulated local data engines"}.
               </p>
-              
+
               <div className="glass-card p-4 text-left mb-6 space-y-2.5">
                 <div className="flex items-center justify-between text-xs p-1">
                   <span className="text-surface-400 font-semibold">Finnhub API Integration</span>
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${
-                    localKeys.finnhub 
-                      ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5" 
-                      : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
-                  }`}>{localKeys.finnhub ? "CONNECTED" : "NOT CONFIGURED"}</span>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${localKeys.finnhub
+                    ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5"
+                    : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
+                    }`}>{localKeys.finnhub ? "CONNECTED" : "NOT CONFIGURED"}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs p-1">
                   <span className="text-surface-400 font-semibold">Alpha Vantage Technical Indicators</span>
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${
-                    localKeys.alphaVantage 
-                      ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5" 
-                      : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
-                  }`}>{localKeys.alphaVantage ? "CONNECTED" : "NOT CONFIGURED"}</span>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${localKeys.alphaVantage
+                    ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5"
+                    : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
+                    }`}>{localKeys.alphaVantage ? "CONNECTED" : "NOT CONFIGURED"}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs p-1">
                   <span className="text-surface-400 font-semibold">Yahoo Finance Feed API</span>
@@ -229,11 +229,10 @@ function OnboardingPage() {
                 </div>
                 <div className="flex items-center justify-between text-xs p-1">
                   <span className="text-surface-400 font-semibold">FMP Fundamental Analytics</span>
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${
-                    localKeys.fmp 
-                      ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5" 
-                      : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
-                  }`}>{localKeys.fmp ? "CONNECTED" : "NOT CONFIGURED"}</span>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded-md border text-[9px] ${localKeys.fmp
+                    ? "text-gain bg-gain/10 border-gain/20 shadow-sm shadow-gain/5"
+                    : "text-surface-400 bg-white/[0.04] border-white/[0.04]"
+                    }`}>{localKeys.fmp ? "CONNECTED" : "NOT CONFIGURED"}</span>
                 </div>
               </div>
 
